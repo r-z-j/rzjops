@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="daily-trades-container">
+    <p>
+        <input
+            value="calendar"
+            type="button"
+            onclick="location.href='{% url "stocks_app:index" %}'" />
+    </p>
+
+    {% if error %}
+        <p class="error">{{ error }}</p>
+    {% else %}
+
+        <!-- Chart for area visualization -->
+        <div >
+            <canvas id="areaChart"></canvas>
+        </div>
+
+        <p>profit/loss: ${{ daily_balance.total }}</p>
+        <p>balance: ${{ daily_balance.account_balance }}</p>
+        <table style="font-size: 14px; width:100%">
+            <thead>
+                <tr>
+                    <th>time</th>
+                    <th>sym</th>
+                    <th>action</th>
+                    <th>shares</th>
+                    <th>price</th>
+                    <th>amount</th>
+                    <th>balance</th>
+                    <th>ref #</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for trade in trades %}
+                <tr>
+                    <td>{{ trade.time|time:"H:i:s" }}</td>
+                    <td>{{ trade.symbol }}</td>
+                    <td>{{ trade.action }}</td>
+                    <td>{{ trade.shares }}</td>
+                    <td>${{ trade.price }}</td>
+                    <td>${{ trade.amount }}</td>
+                    <td>${{ trade.balance }}</td>
+                    <td>{{ trade.ref_id }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+</div>
+
+<script>
+    var ctx = document.getElementById('areaChart').getContext('2d');
+    var areaChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: {{ time_labels|safe }}, // X-axis labels from the view
+            datasets: [{
+                label: 'P/L',
+                data: {{ profit_loss_data|safe }}, // Y-axis data from the view
+                borderColor: '#ffb300',
+                backgroundColor: 'rgba(255, 220, 40, .15)',
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top'
+                }
+            },
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'time'
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'profit/loss ($)'
+                    },
+                    beginAtZero: false
+                }
+            },
+        radius: 0,
+
+        }
+    });
+</script>
+{% endblock %}
+

@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+
+{% block extra_head %}
+<link href='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.11.3/main.min.css' rel='stylesheet' />
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
+<script src="
+https://cdn.jsdelivr.net/npm/chartjs-chart-financial@0.2.1/dist/chartjs-chart-financial.min.js
+"></script>
+
+{% endblock %}
+
+{% block content %}
+<div class="calendar-container --fc-small-font-size">
+    <p>
+    <input
+        value="import"
+        type="button"
+        onclick="location.href='{% url "stocks_app:import_csv" %}'"/>
+    </p>
+    <div id="calendar"></div>
+    <p>balance: ${{ most_recent_balance.account_balance }}</p>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var calendarEl = document.getElementById('calendar');
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        events: "{% url 'stocks_app:calendar_data' %}",
+        eventTimeFormat: {
+            hour: 'numeric',
+            minute: '2-digit',
+            meridiem: 'short'
+        }
+    });
+    calendar.render();
+});
+</script>
+{% endblock %}
+
+
+
+{% comment %} {% extends 'base.html' %}
+
+{% block content %}
+<div class="stocks-container">
+
+    <p>
+    <input
+        value="import"
+        type="button"
+        onclick="location.href='{% url "stocks_app:import_csv" %}'"/>
+
+    </p>
+    <div class="daily-balances">
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Daily Total</th>
+                        <th>Account Balance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for balance in daily_balances %}
+                    <tr>
+                        <td>{{ balance.date }}</td>
+                        <td>${{ balance.total }}</td>
+                        <td>${{ balance.account_balance }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="trades">
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Action</th>
+                        <th>Shares</th>
+                        <th>Price</th>
+                        <th>Amount</th>
+                        <th>P/L</th>
+                        <th>Balance</th>
+                        <th>Ref #</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for trade in trades %}
+                    <tr>
+                        <td>{{ trade.date | date:"m/d/y"}}</td>
+                        <td>{{ trade.time | time:"H:i:s"}}</td>
+                        <td>{{ trade.action }}</td>
+                        <td>{{ trade.shares }}</td>
+                        <td>${{ trade.price }}</td>
+                        <td>${{ trade.amount }}</td>
+                        <td>${{ trade.pnl }}</td>
+                        <td>${{ trade.balance }}</td>
+                        <td>{{ trade.ref_id }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %} {% endcomment %}

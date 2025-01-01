@@ -1,0 +1,47 @@
+<!-- todo_list/todo_app/templates/base.html -->
+<!-- Base template -->
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--Simple.css-->
+    <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/global.css' %}">
+
+    <title>rzj</title>
+        {% block extra_head %}{% endblock %}
+
+</head>
+
+<body>
+    <nav class="navbar">
+        <ul class="navbar-menu">
+            <li> 
+                <a onclick="location.href='{% url "admin:index" %}'">admin</a>
+            </li>
+            <li> 
+                <a onclick="location.href='{% url "stocks_app:index" %}'">stocks</a>
+            </li>
+            <li> 
+                <a onclick="location.href='{% url "todo_app:index" %}'">tasks</a>
+            </li>
+        </ul>
+    </nav>
+    
+    
+    <div>
+        {% block content %}
+        This content will be replaced by different html code for each page.
+        {% endblock %}
+    </div>
+
+</body>
+
+</html>
