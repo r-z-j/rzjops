@@ -2,7 +2,7 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.http import JsonResponse
-from .models import Trade, DailyBalance
+from .models import Order, DailyBalance
 import csv
 from django.db.models import Sum, F
 from datetime import datetime
@@ -14,7 +14,7 @@ from datetime import timedelta
 import io
 
 # def index(request):
-#     trades = Trade.objects.all().order_by('-date', '-time')
+#     trades = Order.objects.all().order_by('-date', '-time')
 #     daily_balances = DailyBalance.objects.all().order_by('-date')
 #     return render(request, 'stocks_app/index.html', {
 #         'trades': trades,
@@ -56,7 +56,7 @@ def get_calendar_data(request):
             })
             events.append({
                 'title': f'${week_total}',
-                'start': (balance.date - timedelta(days=5)).strftime('%Y-%m-%d'),
+                'start': balance.date.strftime('%Y-%m-%d'),
                 'end': balance.date.strftime('%Y-%m-%d'),
                 'borderColor': '#212121',
                 'backgroundColor': '#28a745' if week_total >= 0 else '#dc3545',
@@ -81,7 +81,7 @@ def get_calendar_data(request):
 def daily_trades(request, date):
     try:
         selected_date = datetime.strptime(date, '%Y-%m-%d').date()
-        trades = Trade.objects.filter(date=selected_date).order_by('time')
+        trades = Order.objects.filter(date=selected_date).order_by('time')
         daily_balance = DailyBalance.objects.get(date=selected_date)
 
         # Generate x-axis labels: 5-minute increments from 7:00 AM to 4:00 PM
@@ -171,7 +171,7 @@ def import_csv(request):
                     amount = row[7].replace(',', '').replace('$', '').strip()
                     amount = Decimal(amount) if amount else Decimal('0')
 
-                    Trade.objects.create(
+                    Order.objects.create(
                         date=date,
                         time=time,
                         ref_id=row[3],

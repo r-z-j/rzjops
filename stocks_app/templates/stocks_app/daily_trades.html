@@ -23,12 +23,14 @@
         <table style="font-size: 14px; width:100%">
             <thead>
                 <tr>
+                    <th>action</th>
                     <th>time</th>
                     <th>sym</th>
-                    <th>action</th>
                     <th>shares</th>
                     <th>price</th>
                     <th>amount</th>
+                    <th>commissions</th>
+                    <th>fees</th>
                     <th>balance</th>
                     <th>ref #</th>
                 </tr>
@@ -36,15 +38,31 @@
             <tbody>
                 {% for trade in trades %}
                 <tr>
+                    <td class="{% if trade.action == 'BOT' %}bot{% elif trade.action == 'SOLD' %}sold{% endif %}">
+                        {{ trade.action }}
+                    </td>
                     <td>{{ trade.time|time:"H:i:s" }}</td>
                     <td>{{ trade.symbol }}</td>
-                    <td>{{ trade.action }}</td>
                     <td>{{ trade.shares }}</td>
                     <td>${{ trade.price }}</td>
                     <td>${{ trade.amount }}</td>
+                    <td>
+                    {% if trade.commissions_and_fees == None %}
+                        -
+                    {% else %}
+                        ${{ trade.commissions_and_fees }}
+                    {% endif %}
+                    </td>
+                    <td>
+                    {% if trade.misc_fees == None %}
+                        -
+                    {% else %}
+                        ${{ trade.misc_fees }}
+                    {% endif %}
+                    </td>
                     <td>${{ trade.balance }}</td>
                     <td>{{ trade.ref_id }}</td>
-                </tr>
+                </td>
                 {% endfor %}
             </tbody>
         </table>

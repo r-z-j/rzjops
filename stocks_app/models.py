@@ -1,7 +1,7 @@
 # stocks_app/models.py
 from django.db import models
 
-class Trade(models.Model):
+class Order(models.Model):
     date = models.DateField()
     time = models.TimeField()
     ref_id = models.CharField(max_length=20)

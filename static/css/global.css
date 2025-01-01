@@ -2,6 +2,17 @@ body {
     font-size: .8em;
 }
 
+.bot {
+    background-color: rgba(40, 167, 69, .7);
+    color: white;
+}
+
+.sold {
+    background-color: rgba(220, 53, 69, .7);
+    color: white;
+}
+
+
 a:hover {
     cursor: pointer;
 }
